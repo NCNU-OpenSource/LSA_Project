@@ -33,3 +33,18 @@ defaults.pcm.card 2
 ```
 
 再次去alsamixer看應該就有了
+
+### 播音軟體
+本次使用 mpg321 作為播放音樂的軟體
+安裝:
+```
+sudo apt install mpg321
+```
+
+### python套件
+```
+pip3 install telepot
+pip3 install pymysql
+pip3 install requests
+pip3 install SpeechRecognition-3.7.1-py2.py3-none-any.whl
+```
