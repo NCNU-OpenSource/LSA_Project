@@ -48,3 +48,9 @@ pip3 install pymysql
 pip3 install requests
 pip3 install SpeechRecognition-3.7.1-py2.py3-none-any.whl
 ```
+
+### 分工
+遊戲設計 : 陳柏瑋 60% 楊筱彤 15% 蘇庭玉 15% 徐芳沂 10%
+網路爬蟲 : 楊筱彤 40% 蘇庭玉 40% 徐芳沂 10% 陳柏瑋 10%
+語音辨識 : 楊筱彤 45% 蘇庭玉 45% 陳柏瑋 10%
+bot設計 : 徐芳沂 70% 陳柏瑋 30%
