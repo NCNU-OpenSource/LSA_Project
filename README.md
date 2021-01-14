@@ -41,12 +41,38 @@ defaults.pcm.card 2
 sudo apt install mpg321
 ```
 
-### python套件
+### 資料庫
+- 安裝
 ```
-pip3 install telepot
-pip3 install pymysql
-pip3 install requests
-pip3 install SpeechRecognition-3.7.1-py2.py3-none-any.whl
+sudo apt-get install mariadb-server
+```
+- 設定
+```
+sudo mysql -u root -p //進入資料庫
+```
+```sql=
+create database tableName; //創建table
+CREATE USER 'user'@localhost IDENTIFIED BY 'passwd'; //創建使用者
+GRANT ALL PRIVILEGES ON tableName.* TO 'user'@localhost; //給予使用者剛才創造的table權限
+```
+離開資料庫
+- 匯入資料
+```
+sudo mysql -u root -p tableName < user.sql
+```
+
+### python套件
+- 先安裝pip
+```
+sudo apt install python3-pip
+```
+- 再來安裝套件
+```
+pip3 install telepot //連結telegram的
+pip3 install pymysql //連結資料庫的
+pip3 install requests //爬蟲用
+pip3 install SpeechRecognition //語音辨識
+pip3 install schedule //語音辨識
 ```
 
 ### 分工

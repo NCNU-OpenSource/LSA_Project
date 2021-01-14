@@ -5,7 +5,6 @@ import random
 import pymysql
 import speech_recognition
 import os
-import pyaudio
 import datetime
 import requests
 import schedule
@@ -25,7 +24,7 @@ def getWeather():
     else:
         weather = a[3][-3:-1]
         # print(a[3][-3:-1])
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("Select cId from `user` where 1;")
     tmp = c.fetchall()
@@ -39,13 +38,13 @@ def getWeather():
     conn.commit()
     conn.close()
 def recover():
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("UPDATE `user` set `canDo` = 1 where 1;")
     conn.commit()
     conn.close()
 def sleep():
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("UPDATE `user` set `HP` = `HP` + 30 where 1;")
     conn.commit()
@@ -53,7 +52,7 @@ def sleep():
 def boardcast():
     global todayCMD
     todayCMD = random.randint(0,7)
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("Select cId from `user` where 1;")
     tmp = c.fetchall()
@@ -61,7 +60,7 @@ def boardcast():
         bot.sendMessage(int(list(i)[0]), '今天的口令是:' + cmd1[todayCMD] + cmd2[todayCMD] + cmd3[todayCMD])
     conn.close()
 def checkStatus(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("Select water , kimoji from `user` where cId = "+ str(chat_id) +";")
     tmp = list(c.fetchall())
@@ -109,7 +108,7 @@ def Voice_To_Text():
               # 兩個 except 是當語音辨識不出來的時候 防呆用的 
     return Text
 def checkCanDo(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("Select `canDo` from `user` where `cId` = '" + str(chat_id) + "';")
     result = list(c.fetchall())
@@ -119,7 +118,7 @@ def checkCanDo(chat_id):
     else:
         return True
 def HPEnough(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("Select `HP` from `user` where `cId` = '" + str(chat_id) + "';")
     result = list(c.fetchall())
@@ -130,7 +129,7 @@ def HPEnough(chat_id):
     else:
         return True
 def happy(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     kimoji = random.randint(10,30)
     c.execute("Select `money` from `user` where `cId` = '" + str(chat_id) + "';")
@@ -201,7 +200,7 @@ def canAct(chat_id):
 
 def decreaseWaterPeriod():
     global weather
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     inttmp = 0
     inttmpwater = 0
@@ -220,13 +219,15 @@ def decreaseWaterPeriod():
         inttmpwater = inttmpwater + random.randint(1,3)
         # print(list(i))
         c.execute("UPDATE `user` set `water` = `water` - " +str(inttmp)+ " where `cId` = "+ list(i)[1] +";")
+        conn.commit()
         c.execute("UPDATE `user` set `kimoji` = `kimoji` - " +str(inttmpwater)+ " where `cId` = "+ list(i)[1] +";")
+        conn.commit()
         c.execute("UPDATE `user` set `water` = 0 where `water` < 0 and `cId` = "+ list(i)[1] +";")
         conn.commit()
     conn.close()
 
 def drinkWater(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("UPDATE `user` set `water` = `water` + 10 where `cId` = "+ str(chat_id) +";")
     conn.commit()
@@ -238,20 +239,20 @@ def drinkWater(chat_id):
     bot.sendMessage(chat_id, '咕嚕咕嚕咕嚕，水份回復了')
 
 def deleteAccount(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("delete from `user` where `cId` = "+ str(chat_id) +";")
     conn.commit()
     conn.close()
 def createAccount(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("INSERT INTO `user` (`id`, `cId`, `nickname`, `HP`, `water` ,`kimoji`, `strength` , `dexterity` , `intelligent`, `money`, `level` , `canDo`) VALUES (NULL, '"+ str(chat_id) +"', '"+ str(nowNew[str(chat_id)]) +"', '100', '100','100' , '"+ str(newS[str(chat_id)]) +"', '"+ str(newD[str(chat_id)]) +"', '"+ str(newI[str(chat_id)]) +"', '0', '二兵','1');")
     conn.commit()
     conn.close()
 
 def checkHasAccount(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("Select `cId` from `user` where `cId` = '" + str(chat_id) + "';")
     result = list(c.fetchall())
@@ -263,7 +264,7 @@ def checkHasAccount(chat_id):
 
 
 def showStatus(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("Select * from `user` where `cId` = '" + str(chat_id) + "';")
     tmp = c.fetchall()
@@ -281,7 +282,7 @@ def showStatus(chat_id):
     conn.close()
 
 def clean(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("Select `dexterity` from `user` where `cId` = '" + str(chat_id) + "';")
     result = list(c.fetchall())
@@ -317,7 +318,7 @@ def clean(chat_id):
     
     conn.close()
 def eat(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("Select `strength`,`dexterity`,`intelligent` from `user` where `cId` = '" + str(chat_id) + "';")
     result = list(c.fetchall())
@@ -343,7 +344,7 @@ def eat(chat_id):
     
     conn.close()
 def tolerance(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("Select `strength`,`dexterity`,`intelligent` from `user` where `cId` = '" + str(chat_id) + "';")
     result = list(c.fetchall())
@@ -375,7 +376,7 @@ def tolerance(chat_id):
     conn.close()
 
 def sport(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("Select `strength` from `user` where `cId` = '" + str(chat_id) + "';")
     result = list(c.fetchall())
@@ -412,7 +413,7 @@ def sport(chat_id):
     conn.close()
 
 def learn(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("Select `intelligent` from `user` where `cId` = '" + str(chat_id) + "';")
     result = list(c.fetchall())
@@ -449,7 +450,7 @@ def learn(chat_id):
     conn.close()
 
 def morning(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("Select `intelligent` from `user` where `cId` = '" + str(chat_id) + "';")
     result = list(c.fetchall())
@@ -479,7 +480,7 @@ def morning(chat_id):
     conn.close()
 
 def takeBreak(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     HP = str(random.randint(10,30))
     bot.sendMessage(chat_id, 'Zzzz....\n體力增加'+str(HP))
@@ -489,7 +490,7 @@ def takeBreak(chat_id):
     conn.close()
 
 def read(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     INT = random.randint(1,5)
     bot.sendMessage(chat_id, '看書中...\n智力增加'+str(INT))
@@ -499,7 +500,7 @@ def read(chat_id):
     conn.close()
 
 def shower(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     c.execute("Select `strength`,`dexterity`,`intelligent` from `user` where `cId` = '" + str(chat_id) + "';")
     result = list(c.fetchall())
@@ -523,7 +524,7 @@ def shower(chat_id):
     conn.close()
 
 def phone(chat_id):
-    conn = pymysql.connect(host='localhost', user='',passwd='', db='lsa')
+    conn = pymysql.connect(host='localhost', user='user',passwd='passwd', db='tableName')
     c = conn.cursor()
     HP = random.randint(10,20)
     bot.sendMessage(chat_id, '摸到久違的手機了\n體力增加'+str(HP))

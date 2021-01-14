@@ -46,8 +46,6 @@ CREATE TABLE `user` (
 -- 傾印資料表的資料 `user`
 --
 
-INSERT INTO `user` (`id`, `cId`, `nickname`, `HP`, `water`, `kimoji`, `strength`, `dexterity`, `intelligent`, `money`, `level`, `canDo`) VALUES
-(2, '662368163', '蓬萊人偶', 72, 0, 0, 4, 5, 3, 0, '二兵', 1);
 
 --
 -- 已傾印資料表的索引
